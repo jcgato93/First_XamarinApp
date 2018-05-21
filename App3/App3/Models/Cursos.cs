@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace App3.Models
 {
@@ -13,7 +14,7 @@ namespace App3.Models
         public DateTime Fecha_Publicacion { get; set; }
         public long UserId { get; set; }
         public string VerificacionModerador { get; set; }
-    
 
+        public List<Clases> Clases { get; set; }
     }
 }

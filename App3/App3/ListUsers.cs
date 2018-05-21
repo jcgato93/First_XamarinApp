@@ -9,7 +9,7 @@ namespace App3
 {
 	public class ListUsers : ContentPage
 	{
-		public ListUsers ()
+		public ListUsers (Models.User user)
 		{
             Label header = new Label
             {
@@ -18,6 +18,10 @@ namespace App3
                 HorizontalOptions = LayoutOptions.Center
             };
 
+            Label nameUser = new Label
+            {
+                Text="Hello "+user.Email
+            };
 
             List<Models.Cursos> list = new List<Models.Cursos>()
             {
@@ -136,6 +140,7 @@ namespace App3
                 {
                     Children = {
                     header,
+                    nameUser,
                     listView
                     }
                 }

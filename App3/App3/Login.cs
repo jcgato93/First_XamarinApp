@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace App3
@@ -12,6 +12,7 @@ namespace App3
         #region Variables
         Entry User = null;
         Entry Pass = null;
+        ActivityIndicator loading = null;
         #endregion
 
         #region UI
@@ -59,6 +60,8 @@ namespace App3
                 BackgroundColor = Color.MediumOrchid
             };
 
+             loading = new ActivityIndicator();
+
             //generar evento de tap gesture
             tapForgot.Tapped += TapForgot_Tapped;
 
@@ -66,6 +69,7 @@ namespace App3
             View_Page.Children.Add(Pass);
             View_Page.Children.Add(ButtonLogin);
             View_Page.Children.Add(btnRegister);
+            View_Page.Children.Add(loading);
             View_Page.Children.Add(label);
 
             //asignar evento a un control
@@ -92,20 +96,25 @@ namespace App3
             {
                 if (!string.IsNullOrEmpty(User.Text) &&
                     !string.IsNullOrEmpty(Pass.Text) && 
-                    User.Text.Contains("@"))
+                    Methods.UserMethods.IsValidEmail(User.Text))
                 {
-                    var x = (from i in App.listUsers
-                             where i.Email == User.Text && i.Password == Pass.Text
-                             select i).FirstOrDefault();
+                    //var x = (from i in App.listUsers
+                    //         where i.Email == User.Text && i.Password == Pass.Text
+                    //         select i).FirstOrDefault();
+                    loading.IsRunning = true;
+                    await Task.Delay(2000);
+                    var IsRegister = Services.UserService.IsRegister(User.Text, Pass.Text);
 
-                    if (x!=null)
+                    loading.IsRunning = false;
+
+                    if (IsRegister)
                     {
                         Models.User user = new Models.User();
                         user.Email = User.Text;
                         user.Password = Pass.Text;
 
 
-                        await Navigation.PushAsync(new ListUsers());
+                        await Navigation.PushAsync(new ListUsers(user));
                     }
                     else
                     {

@@ -84,20 +84,17 @@ namespace App3
             View_Page.Children.Add(txtSemestre);
             View_Page.Children.Add(dtpFecha_nacimiento);
             View_Page.Children.Add(btnRegister);
-            View_Page.Children.Add(btnViewUsers);
+           
 
 
             //buton event
             btnRegister.Clicked += BtnRegister_Clicked;
-            btnViewUsers.Clicked += BtnViewUsers_Clicked;
+           
 
             Content = View_Page;
         }
 
-        private async void BtnViewUsers_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new ListUsers());
-        }
+    
 
         private async void BtnRegister_Clicked(object sender, EventArgs e)
         {
@@ -107,16 +104,16 @@ namespace App3
                 && !string.IsNullOrEmpty(txtApellido.Text)
                 && !string.IsNullOrEmpty(txtEmail.Text)
                 && !string.IsNullOrEmpty(txtPass.Text)
-                && !string.IsNullOrEmpty(txtSemestre.Text))
+                && !string.IsNullOrEmpty(txtSemestre.Text)
+                && Methods.UserMethods.IsValidEmail(txtEmail.Text))
             {
                 Models.User user = new Models.User();
                 
-                user.Firstname = txtNombre.Text;
-                user.Lastname = txtApellido.Text;
+                user.Nombres = txtNombre.Text;
+                user.Apellidos = txtApellido.Text;
                 user.Email = txtEmail.Text;
-                user.Password = txtPass.Text;
-                user.Semestre = int.Parse(txtSemestre.Text);
-                user.Fecha_nacimiento = Convert.ToDateTime(dtpFecha_nacimiento.Date.ToString("yyyy-MM-dd"));
+                user.Password = txtPass.Text;                
+                
 
                 App.listUsers.Add(user);
 
@@ -126,7 +123,7 @@ namespace App3
                 txtEmail.Text = string.Empty;
                 txtPass.Text = string.Empty;
                 txtSemestre.Text = string.Empty;
-                user.Fecha_nacimiento = Convert.ToDateTime(dtpFecha_nacimiento.Date.ToString("yyyy-MM-dd"));
+                
 
                 await DisplayAlert("Register", "Success", "Ok");
 
