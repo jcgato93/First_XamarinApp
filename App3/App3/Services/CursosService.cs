@@ -7,35 +7,30 @@ using System.Text;
 
 namespace App3.Services
 {
-    public static class UserService
+    public static class CursosService
     {
-
         public static string UriClient = ConfiguracionGlobal.host;
 
+
         /// <summary>
-        /// Verifica si un usuario ya se encuentra registrado
+        /// 
         /// </summary>
-        /// <param name="email"></param>
-        /// <param name="password"></param>
         /// <returns></returns>
-        public static bool IsRegister(string email, string password)
+        public static List<Models.Cursos> ObtenerCursos()
         {
             try
-            {              
-                Models.User user=new Models.User { Email=email,Password=password};
-
-                var json = JsonConvert.SerializeObject(user);
-
+            {
+               
                 var client = new RestClient(UriClient);
                 // client.Authenticator = new HttpBasicAuthenticator(username, password);
 
-                var request = new RestRequest("proyectoPI/api/User/IsRegister", Method.POST);
+                var request = new RestRequest("proyectoPI/api/Cursos", Method.POST);
 
                 request.RequestFormat = DataFormat.Json;
 
                 // adds to POST or URL querystring based on Method                
-                request.AddParameter("application/json", json, ParameterType.RequestBody);
-                
+                //request.AddParameter("application/json", json, ParameterType.RequestBody);
+
 
 
                 // easily add HTTP Headers
@@ -47,36 +42,27 @@ namespace App3.Services
                 var content = response.Content; // raw content as string
 
                 JObject result = JObject.Parse(content);
-                       
 
-                if ((int)result["status"]==200)
+
+                if ((int)result["statuscode"] == 200)
                 {
-                    if ((bool)result["result"])
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                            
+
+                    var cursos = JsonConvert.DeserializeObject<List<Models.Cursos>>(result["cursos"].ToString());
+                    return cursos;
                 }
                 else
                 {
-                    return false;
+                    return null;
                 }
 
-                
-                
+
+
             }
             catch (Exception ex)
             {
 
                 throw ex;
             }
-
         }
-
-
     }
 }

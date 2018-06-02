@@ -23,51 +23,11 @@ namespace App3
                 Text="Hello "+user.Email
             };
 
-            List<Models.Cursos> list = new List<Models.Cursos>()
-            {
-                new Models.Cursos()
-                {
-                    Titulo="Curso de Git",
-                    Calificacion=8
-                },
-
-                new Models.Cursos()
-                {
-                    Titulo="Curso de Python",
-                    Calificacion=10
-                },
-
-                new Models.Cursos()
-                {
-                    Titulo="Curso de Swift",
-                    Calificacion=6
-                },
-
-                new Models.Cursos()
-                {
-                    Titulo="Curso de Algoritmos con C",
-                    Calificacion=6
-                },
-
-                new Models.Cursos()
-                {
-                    Titulo="Curso de Node.js",
-                    Calificacion=10
-                },
-
-                new Models.Cursos()
-                {
-                    Titulo="Curso de MEAN",
-                    Calificacion=8
-                },
-
-                new Models.Cursos()
-                {
-                    Titulo="Curso de React.js",
-                    Calificacion=6
-                }
-
-            };
+            var indicator = new ActivityIndicator();
+            indicator.IsRunning = true;
+            System.Threading.Tasks.Task.Delay(2000);
+            List<Models.Cursos> list = Services.CursosService.ObtenerCursos();
+            indicator.IsRunning = false;
 
 
             ListView listView = new ListView
@@ -87,6 +47,9 @@ namespace App3
 
                       Label Calificacion = new Label();
                       Calificacion.SetBinding(Label.TextProperty, "Calificacion");
+
+                      Label cursoId = new Label { IsVisible=false };
+                      cursoId.SetBinding(Label.TextProperty, "CursoId");
 
                       Label lblCalificacion = new Label()
                       {
@@ -116,6 +79,7 @@ namespace App3
                                       Children=
                                       {                                                 
                                           lblCalificacion,
+                                          cursoId,
                                           Calificacion,
                                           
                                       }
@@ -127,6 +91,8 @@ namespace App3
                   })
 
             };
+    
+            listView.ItemTapped += ListView_ItemTappedAsync;
 
             //Accomodate margin wich platform
             this.Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
@@ -139,12 +105,25 @@ namespace App3
                 Content = new StackLayout
                 {
                     Children = {
-                    header,
+                    header,                    
                     nameUser,
                     listView
                     }
                 }
             };
 		}
-	}
+
+
+        /// <summary>
+        /// Navega hacia la lista de clases correspondiente al curso
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void ListView_ItemTappedAsync(object sender, ItemTappedEventArgs e)
+        {
+            var x =(Xamarin.Forms.ListView) sender;
+            var curso =(Models.Cursos) x.SelectedItem;
+            await Navigation.PushAsync(new Clases(curso.CursoId));
+        }
+    }
 }
